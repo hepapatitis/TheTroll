@@ -18,24 +18,32 @@
 display.setStatusBar( display.HiddenStatusBar )
 
 -- ASSETS FOLDERS
-local ASSET_FOLDER = "assets/"
-local ASSET_FOLDER_SOUND = ASSET_FOLDER .. "sounds/"
+ASSET_FOLDER = "assets/"
+ASSET_FOLDER_SOUND = ASSET_FOLDER .. "sounds/"
 
 -- GLOBAL VARIABLES
-local sceneGroup = display.newGroup()
-local phone_width = display.contentWidth
-local phone_height = display.contentHeight
-local score_file = "scorefile.txt"
-local swipe_sensitivity = 20
-local DEFAULT_FONT = "Otaku Rant"
-local answer_window_width = 252 * 0.5
-local answer_window_height = 122 * 0.5
+sceneGroup = display.newGroup()
+phone_width = display.contentWidth
+phone_height = display.contentHeight
+phone_middle_x = phone_width/2
+phone_middle_y = phone_height/2
+score_file = "scorefile.txt"
+swipe_sensitivity = 20
+DEFAULT_FONT = "Otaku Rant"
+answer_window_width = 252 * 0.5
+answer_window_height = 122 * 0.5
+
+q_window_middle_point_y = phone_middle_y - 80
+q_answer_middle_point_x_1 = phone_middle_x - 70
+q_answer_middle_point_x_2 = phone_middle_x + 70
+q_answer_middle_point_y_1 = phone_middle_y + 75
+q_answer_middle_point_y_2 = phone_middle_y + 150
 
 -- AUDIO & SOUNDS
-local audio_menu_click = audio.loadSound( ASSET_FOLDER_SOUND .. "select_menu_click/menu_click.wav" )
-local audio_plus_point = audio.loadSound( ASSET_FOLDER_SOUND .. "score_plus/score_plus.wav" )
-local audio_minus_point = audio.loadSound( ASSET_FOLDER_SOUND .. "score_minus/score_minus.wav" )
-local audio_swipe = {
+audio_menu_click = audio.loadSound( ASSET_FOLDER_SOUND .. "select_menu_click/menu_click.wav" )
+audio_plus_point = audio.loadSound( ASSET_FOLDER_SOUND .. "score_plus/score_plus.wav" )
+audio_minus_point = audio.loadSound( ASSET_FOLDER_SOUND .. "score_minus/score_minus.wav" )
+audio_swipe = {
     swipe1 = audio.loadSound( ASSET_FOLDER_SOUND .. "swipe_squares/whip_01.wav" ),
     swipe2 = audio.loadSound( ASSET_FOLDER_SOUND .. "swipe_squares/whip_02.wav" ),
     swipe3 = audio.loadSound( ASSET_FOLDER_SOUND .. "swipe_squares/whip_03.wav" ),
@@ -45,8 +53,8 @@ local audio_swipe = {
 }
 
 -- Score Functions
-local high_score = 0
-local last_game_score = 0
+high_score = 0
+last_game_score = 0
 
 function create_high_score_file()
 	local path = system.pathForFile( score_file, system.DocumentsDirectory)
@@ -110,15 +118,15 @@ function create_splash_screen()
 	splash_scene_group = display.newGroup()
 	
 	splash_bg =  display.newImageRect( splash_scene_group, ASSET_FOLDER .. "bg01.png", phone_width, phone_height )
-	splash_bg.x = phone_width/2
-	splash_bg.y = phone_height/2
+	splash_bg.x = phone_middle_x
+	splash_bg.y = phone_middle_y
 	
 	local btn_width = 64
 	local btn_height = 64
 
 	splash_play_btn =  display.newImageRect( splash_scene_group, ASSET_FOLDER .. "btn-play.png", btn_width, btn_height )
-	splash_play_btn.x = phone_width/2
-	splash_play_btn.y = phone_height/2 + 70
+	splash_play_btn.x = phone_middle_x
+	splash_play_btn.y = phone_middle_y + 70
 	splash_play_btn:toFront()
 		
 	local function onTap_scene_game( event )
@@ -130,16 +138,16 @@ function create_splash_screen()
 	splash_play_btn:addEventListener( "tap", onTap_scene_game )
 	
 	--splash_highscore_container =  display.newImageRect( splash_scene_group, ASSET_FOLDER .. "hiscore_banner.png", phone_width, 55 )
-	--splash_highscore_container.x = phone_width/2
-	--splash_highscore_container.y = phone_height/2 - 20
+	--splash_highscore_container.x = phone_middle_x
+	--splash_highscore_container.y = phone_middle_y - 20
 	
 	high_score = load_high_score()
 	local splash_highscore_text_options = 
 	{  
 		text = high_score,
 		parent = splash_scene_group,
-		x = phone_width/2 + 100,
-		y = phone_height/2 - 20,
+		x = phone_middle_x + 100,
+		y = phone_middle_y - 20,
 		width = phone_width,
 		font = DEFAULT_FONT,   
 		fontSize = 25,
@@ -175,7 +183,17 @@ local answer_window_1
 local answer_window_2
 local answer_window_3
 local answer_window_4
+local next_button
 
+local q_set
+local a_set
+local chosen_set_idx
+
+local q_window_middle_point_y = phone_middle_y - 80
+local q_answer_middle_point_x_1 = phone_middle_x - 70
+local q_answer_middle_point_x_2 = phone_middle_x + 70
+local q_answer_middle_point_y_1 = phone_middle_y + 75
+local q_answer_middle_point_y_2 = phone_middle_y + 150
 
 -- Start & Pause & Resume Game
 local function start_game()
@@ -202,82 +220,12 @@ local function game_over()
 end
 
 function create_game_screen()
-	create_question_1()
+	--create_question_1()
+	require ("level1")
+	init_level1()
 end
 
 function remove_game_screen()
-	
-end
-
-function create_question_1()
-	game_scene_group = display.newGroup()
-	game_scene_block_group = display.newGroup()
-	
-	local q_set = {
-		[0] = "1 + 1 ?",
-		[1] = "2 + 1 ?",
-		[2] = "1 + 2 ?",
-		[3] = "2 + 2 ?",
-	}
-	local a_set = {
-		[0] = "2",
-		[1] = "3",
-		[2] = "3",
-		[3] = "4",
-	}
-	
-	local random_selection = math.random(0,3)
-	
-	local q_window_middle_point_y = phone_height/2 - 80
-	
-	local q_answer_middle_point_x_1 = phone_width/2 - 70
-	local q_answer_middle_point_x_2 = phone_width/2 + 70
-	local q_answer_middle_point_y_1 = phone_height/2 + 75
-	local q_answer_middle_point_y_2 = phone_height/2 + 150
-	
-	-- Create Background
-	game_bg =  display.newImageRect( game_scene_block_group, ASSET_FOLDER .. "bg01.png", phone_width, phone_height )
-	game_bg.x = phone_width/2
-	game_bg.y = phone_height/2
-
-	
-	
-	-- Create Question Window
-	question_window = display.newImageRect( game_scene_block_group, ASSET_FOLDER .. "question-window.png", 536 * 0.5, 426 * 0.5 )
-	question_window.x = phone_width/2
-	question_window.y = q_window_middle_point_y
-	
-	-- Create Question Text
-	question_text = display.newText( game_scene_block_group, q_set[random_selection], phone_width/2, q_window_middle_point_y +15, DEFAULT_FONT, 50 )
-	question_text_2 = display.newText( game_scene_block_group, "What is", phone_width/2, q_window_middle_point_y - 35, DEFAULT_FONT, 24 )
-	question_label = display.newText( game_scene_block_group, "No. 1", phone_width/2, q_window_middle_point_y - 85, DEFAULT_FONT, 24 )
-	
-	-- Create Answer Window
-	answer_window_1 = display.newImageRect( game_scene_block_group, ASSET_FOLDER .. "answer-window.png", answer_window_width, answer_window_height )
-	answer_window_1.x = q_answer_middle_point_x_1
-	answer_window_1.y = q_answer_middle_point_y_1
-	
-	answer_window_2 = display.newImageRect( game_scene_block_group, ASSET_FOLDER .. "answer-window.png", answer_window_width, answer_window_height )
-	answer_window_2.x = q_answer_middle_point_x_1
-	answer_window_2.y = q_answer_middle_point_y_2
-	
-	answer_window_3 = display.newImageRect( game_scene_block_group, ASSET_FOLDER .. "answer-window.png", answer_window_width, answer_window_height )
-	answer_window_3.x = q_answer_middle_point_x_2
-	answer_window_3.y = q_answer_middle_point_y_1
-	
-	answer_window_3 = display.newImageRect( game_scene_block_group, ASSET_FOLDER .. "answer-window.png", answer_window_width, answer_window_height )
-	answer_window_3.x = q_answer_middle_point_x_2
-	answer_window_3.y = q_answer_middle_point_y_2
-	
-	-- Create Answer Text
-	answer_text_1 = display.newText( game_scene_block_group, a_set[0], q_answer_middle_point_x_1, q_answer_middle_point_y_1, DEFAULT_FONT, 24 )
-	answer_text_2 = display.newText( game_scene_block_group, a_set[1], q_answer_middle_point_x_1, q_answer_middle_point_y_2, DEFAULT_FONT, 24 )
-	answer_text_3 = display.newText( game_scene_block_group, a_set[2], q_answer_middle_point_x_2, q_answer_middle_point_y_1, DEFAULT_FONT, 24 )
-	answer_text_4 = display.newText( game_scene_block_group, a_set[3], q_answer_middle_point_x_2, q_answer_middle_point_y_2, DEFAULT_FONT, 24 )
-	
-end
-
-function remove_question_1()
 	
 end
 
@@ -289,8 +237,8 @@ function create_credits_screen()
 	splash_scene_group = display.newGroup()
 	
 	credits = display.newImageRect( splash_scene_group, ASSET_FOLDER .. "credits_scene.png", phone_width, phone_height )
-	credits.x = phone_width/2
-	credits.y = phone_height/2
+	credits.x = phone_middle_x
+	credits.y = phone_middle_y
 	
 	local function onTap_scene_splash( event )
 		remove_credits_screen()
@@ -316,7 +264,7 @@ local pause_scene_group
 function create_pause_screen()
 	pause_scene_group = display.newGroup()
 	
-	pause_overlay = display.newRect( pause_scene_group, phone_width/2, phone_height/2, phone_width, phone_height+100)
+	pause_overlay = display.newRect( pause_scene_group, phone_middle_x, phone_middle_y, phone_width, phone_height+100)
 	pause_overlay:setFillColor(0,0,0)
 	pause_overlay.alpha = 0.5
 	pause_overlay:addEventListener("touch", function() return true end)
@@ -327,16 +275,16 @@ function create_pause_screen()
 	pause_btn_play.y = 25
 	
 	pause_box =  display.newImageRect( pause_scene_group, ASSET_FOLDER .. "pause_btn_bg.png", 260, 340 )
-	pause_box.x = phone_width/2
-	pause_box.y = phone_height/2
+	pause_box.x = phone_middle_x
+	pause_box.y = phone_middle_y
 		
 	pause_btn_resume =  display.newImageRect( pause_scene_group, ASSET_FOLDER .. "btn_resume.png", 200, 85 )
-	pause_btn_resume.x = phone_width/2
-	pause_btn_resume.y = phone_height/2 + 5
+	pause_btn_resume.x = phone_middle_x
+	pause_btn_resume.y = phone_middle_y + 5
 	
 	pause_btn_main_menu =  display.newImageRect( pause_scene_group, ASSET_FOLDER .. "btn_main_menu_2.png", 200, 85 )
-	pause_btn_main_menu.x = phone_width/2
-	pause_btn_main_menu.y = phone_height/2 + 100
+	pause_btn_main_menu.x = phone_middle_x
+	pause_btn_main_menu.y = phone_middle_y + 100
 	
 	
 	local function btnTapBack(event)
@@ -380,19 +328,19 @@ function create_gameover_screen()
 	
 	gameover_scene_group = display.newGroup()
 
-	gameover_overlay = display.newRect( gameover_scene_group, phone_width/2, phone_height/2, phone_width, phone_height+100)
+	gameover_overlay = display.newRect( gameover_scene_group, phone_middle_x, phone_middle_y, phone_width, phone_height+100)
 	gameover_overlay:setFillColor(0,0,0)
 	gameover_overlay.alpha = 0.5
 	gameover_overlay:addEventListener("touch", function() return true end)
 	gameover_overlay:addEventListener("tap", function() return true end)
 	
 	gameover_box =  display.newImageRect( gameover_scene_group, ASSET_FOLDER .. "game_over_scene.png", 260, 340 )
-	gameover_box.x = phone_width/2
-	gameover_box.y = phone_height/2
+	gameover_box.x = phone_middle_x
+	gameover_box.y = phone_middle_y
 	
 	gameover_btn_main_menu =  display.newImageRect( gameover_scene_group, ASSET_FOLDER .. "btn-main-menu.png", btn_main_menu_width, btn_main_menu_height )
-	gameover_btn_main_menu.x = phone_width/2
-	gameover_btn_main_menu.y = phone_height/2 + 118
+	gameover_btn_main_menu.x = phone_middle_x
+	gameover_btn_main_menu.y = phone_middle_y + 118
 	
 	local function btnTapMainMenu(event)
 		create_splash_screen()
@@ -411,7 +359,7 @@ function create_gameover_screen()
 		text = high_score,
 		parent = gameover_scene_group,
 		x = display.contentCenterX,
-		y = phone_height/2 + 68,
+		y = phone_middle_y + 68,
 		width = btn_main_menu_width,     --required for multi-line and alignment
 		font = native.systemFontBold,   
 		fontSize = 30,
@@ -424,7 +372,7 @@ function create_gameover_screen()
 		text = last_game_score,
 		parent = gameover_scene_group,
 		x = display.contentCenterX,
-		y = phone_height/2 + 21,
+		y = phone_middle_y + 21,
 		width = btn_main_menu_width,     --required for multi-line and alignment
 		font = native.systemFontBold,   
 		fontSize = 38,

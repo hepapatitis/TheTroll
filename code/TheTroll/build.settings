@@ -12,7 +12,7 @@ settings = {
 		plist = {
 			UIAppFonts =
 			{
-				"Foo.ttf"
+				"Otaku Rant.ttf"
 			},
 			UIStatusBarHidden = true,
 			UIPrerenderedIcon = true, -- set to false for "shine" overlay
