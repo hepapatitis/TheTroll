@@ -55,7 +55,7 @@ function init_level4()
 		print("Selected: " .. chosen_set_idx)
 		
 		-- Create Background
-		game_bg =  display.newImageRect( game_scene_block_group, ASSET_FOLDER .. "bg01.png", phone_width, phone_height )
+		game_bg =  display.newImageRect( game_scene_block_group, ASSET_FOLDER .. "bg01.png", bg_width, bg_height )
 		game_bg.x = phone_middle_x
 		game_bg.y = phone_middle_y
 
@@ -88,7 +88,7 @@ function init_level4()
 		question_text.isVisible = false
 		question_text_2.isVisible = false
 		
-		question_text_3 = display.newText( game_scene_block_group, "How many '+' was there?", phone_middle_x, q_window_middle_point_y, DEFAULT_FONT, 20 )
+		question_text_3 = display.newText( game_scene_block_group, "What is the total?", phone_middle_x, q_window_middle_point_y, DEFAULT_FONT, 20 )
 
 		-- Create Answer Window
 		answer_window_1 = display.newImageRect( game_scene_block_group, ASSET_FOLDER .. "answer-window.png", answer_window_width, answer_window_height )

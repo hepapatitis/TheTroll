@@ -23,6 +23,8 @@ ASSET_FOLDER_SOUND = ASSET_FOLDER .. "sounds/"
 
 -- GLOBAL VARIABLES
 sceneGroup = display.newGroup()
+bg_width = 360
+bg_height = 570
 phone_width = display.contentWidth
 phone_height = display.contentHeight
 phone_middle_x = phone_width/2
@@ -108,6 +110,7 @@ end
 -- SPLASH SCREEN - #splashscreen
 -----------------------------------------------------------------------------------------
 local splash_bg
+local splash_logo
 local splash_highscore_container
 local splash_play_btn
 local splash_credits_btn
@@ -117,9 +120,13 @@ local splash_high_score_text
 function create_splash_screen() 
 	splash_scene_group = display.newGroup()
 	
-	splash_bg =  display.newImageRect( splash_scene_group, ASSET_FOLDER .. "bg01.png", phone_width, phone_height )
+	splash_bg =  display.newImageRect( splash_scene_group, ASSET_FOLDER .. "bg01.png", bg_width, bg_height )
 	splash_bg.x = phone_middle_x
 	splash_bg.y = phone_middle_y
+	
+	splash_logo =  display.newImageRect( splash_scene_group, ASSET_FOLDER .. "troll-test-logo.png", 206, 132)
+	splash_logo.x = phone_middle_x
+	splash_logo.y = phone_middle_y - 100
 	
 	local btn_width = 64
 	local btn_height = 64

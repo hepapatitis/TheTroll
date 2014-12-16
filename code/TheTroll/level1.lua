@@ -54,7 +54,7 @@ function init_level1()
 		print("Selected: " .. chosen_set_idx)
 		
 		-- Create Background
-		game_bg =  display.newImageRect( game_scene_block_group, ASSET_FOLDER .. "bg01.png", phone_width, phone_height )
+		game_bg =  display.newImageRect( game_scene_block_group, ASSET_FOLDER .. "bg01.png", bg_width, bg_height )
 		game_bg.x = phone_middle_x
 		game_bg.y = phone_middle_y
 
