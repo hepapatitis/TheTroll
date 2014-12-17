@@ -32,6 +32,7 @@ phone_middle_y = phone_height/2
 score_file = "scorefile.txt"
 swipe_sensitivity = 20
 DEFAULT_FONT = "Otaku Rant"
+REMOVAL_DELAY = 1000
 answer_window_width = 252 * 0.5
 answer_window_height = 122 * 0.5
 
@@ -40,6 +41,17 @@ q_answer_middle_point_x_1 = phone_middle_x - 70
 q_answer_middle_point_x_2 = phone_middle_x + 70
 q_answer_middle_point_y_1 = phone_middle_y + 75
 q_answer_middle_point_y_2 = phone_middle_y + 150
+
+q_answer_middle_point_x_1z = q_answer_middle_point_x_1 + phone_width
+q_answer_middle_point_x_2z = q_answer_middle_point_x_2 + phone_width
+q_text_middle_point_xz = phone_middle_x + phone_width
+
+q_animation_speed = 500
+q_animation_speed_1 = q_animation_speed + 50
+q_animation_speed_2 = q_animation_speed + 100
+q_animation_speed_3 = q_animation_speed + 150
+q_animation_speed_4 = q_animation_speed + 200
+q_move_amount = 0 - phone_width
 
 -- AUDIO & SOUNDS
 audio_menu_click = audio.loadSound( ASSET_FOLDER_SOUND .. "select_menu_click/menu_click.wav" )
@@ -196,28 +208,45 @@ local q_set
 local a_set
 local chosen_set_idx
 
-local q_window_middle_point_y = phone_middle_y - 80
+local q_window_middle_point_y = phone_middle_y - 160
 local q_answer_middle_point_x_1 = phone_middle_x - 70
 local q_answer_middle_point_x_2 = phone_middle_x + 70
 local q_answer_middle_point_y_1 = phone_middle_y + 75
 local q_answer_middle_point_y_2 = phone_middle_y + 150
 
--- Start & Pause & Resume Game
-local function start_game()
-	game_timer = timer.performWithDelay( TIMER_FPS, game_loop, 0 )
-	game_loop()
-	game_is_paused = 0
+progress_group = display.newGroup()
+progress_text = nil
+progress_bar = {}
+current_progress = 0
+progress_bar_width = 280
+progress_bar_height = 12
+progress_bar_x = phone_middle_x
+progress_bar_y = q_window_middle_point_y - 50
+progress_bar_animation_speed = 150
+
+-- Progress CRUD
+function create_progress()
+	for i = 1, 10 do
+        progress_bar[i] = display.newImageRect( progress_group, ASSET_FOLDER .. "progress-bar-"..i..".png", progress_bar_width, progress_bar_height )
+		progress_bar[i].x = progress_bar_x
+		progress_bar[i].y = progress_bar_y
+		transition.to( progress_bar[i], { time=0, alpha=0 } )
+    end
+	progress_text = display.newImageRect( progress_group, ASSET_FOLDER .. "progress.png", 100, 20 )
+	progress_text.x = progress_bar[1].x - (progress_bar_width * 0.5) + 50
+	progress_text.y = progress_bar[1].y - 20
 end
 
-local function pause_game()
-	local result = timer.pause(game_timer)
-	create_pause_screen()
-	game_is_paused = 1
-end
-
-local function resume_game()
-	timer.resume(game_timer)
-	game_is_paused = 0
+function update_progress(num)
+	progress_group:toFront()
+	
+	transition.to( progress_bar[num], { time=progress_bar_animation_speed, alpha=1.0 } )
+	if current_progress > 0 then
+		transition.to( progress_bar[current_progress], { time=progress_bar_animation_speed, alpha=0 } )
+	end
+	
+	progress_group:toFront()
+	current_progress = num
 end
 
 -- Game Over Game Function
@@ -227,9 +256,11 @@ local function game_over()
 end
 
 function create_game_screen()
-	--create_question_1()
+	create_progress()
+	
 	require ("level1")
 	init_level1()
+	
 end
 
 function remove_game_screen()

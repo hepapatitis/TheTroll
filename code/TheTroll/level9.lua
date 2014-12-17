@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------------------
 --
--- level5.lua
+-- level9.lua
 -- By		: Stephanus Yanaputra
 -- Version	: 1.0
 --
@@ -12,6 +12,7 @@ local next_button_group
 local game_bg
 local question_text
 local question_text_2
+local question_text_3
 local question_window
 local question_label
 local answer_text_1
@@ -28,9 +29,9 @@ local q_set
 local a_set
 local chosen_set_idx
 
-local current_lv = 5
+local current_lv = 9
 
-function init_level5()
+function init_level9()
 	print("Init Lv: " .. current_lv)
 	
 	function create_question()
@@ -43,16 +44,16 @@ function init_level5()
 		question_block_group.x = phone_width
 		
 		q_set = {
-			[1] = "#ffffff",
-			[2] = "#000000",
-			[3] = "#aaaaaa",
-			[4] = "#ffcc00",
+			[1] = "217,383",
+			[2] = "373,393",
+			[3] = "433,193",
+			[4] = "452,423",
 		}
 		a_set = {
-			[1] = "White",
-			[2] = "Black",
-			[3] = "Gray",
-			[4] = "Yellow",
+			[1] = "2",
+			[2] = "4",
+			[3] = "3",
+			[4] = "1",
 		}
 		
 		local random_selection = math.random(1,4)
@@ -73,7 +74,7 @@ function init_level5()
 		
 		-- Create Question Text
 		question_text = display.newText( question_block_group, q_set[random_selection], phone_middle_x, q_window_middle_point_y +15, DEFAULT_FONT, 25 )
-		question_text_2 = display.newText( question_block_group, "What color is this?", phone_middle_x, q_window_middle_point_y - 35, DEFAULT_FONT, 24 )
+		question_text_2 = display.newText( question_block_group, "Take a look at", phone_middle_x, q_window_middle_point_y - 35, DEFAULT_FONT, 20 )
 		question_label = display.newText( question_block_group, "No. "..current_lv, phone_middle_x, q_window_middle_point_y - 85, DEFAULT_FONT, 24 )
 		
 		-- Create Next Button
@@ -125,6 +126,13 @@ function init_level5()
 		-- Hide Button
 		transition.to( next_button_group, { time = q_animation_speed, x = q_move_amount, delta=true, transition=easing.outBack } )
 		
+		-- Hide & Show Text
+		question_text.isVisible = false
+		question_text_2.isVisible = false
+		
+		question_text_3 = display.newText( question_block_group, "How many '3' was there?", phone_middle_x, q_window_middle_point_y, DEFAULT_FONT, 19 )
+		
+		
 		-- Show Answer
 		transition.to( answer_window_1	, { time = q_animation_speed_1, x = q_move_amount, delta=true, transition=easing.outBack } )
 		transition.to( answer_text_1	, { time = q_animation_speed_1, x = q_move_amount, delta=true, transition=easing.outBack } )
@@ -142,8 +150,8 @@ function init_level5()
 			--Remove Question 1
 			remove_question()
 			
-			require("level6")
-			init_level6()
+			require("level10")
+			init_level10()
 		else
 			-- Game Over
 			remove_question()
@@ -160,6 +168,7 @@ function init_level5()
 		
 		display.remove(question_text)
 		display.remove(question_text_2)
+		display.remove(question_text_3)
 		display.remove(question_window)
 		display.remove(question_label)
 		
