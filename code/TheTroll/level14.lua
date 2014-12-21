@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------------------
 --
--- level10.lua
+-- level14.lua
 -- By		: Stephanus Yanaputra
 -- Version	: 1.0
 --
@@ -13,6 +13,7 @@ local game_bg
 local question_text
 local question_text_2
 local question_text_3
+local question_text_4
 local question_window
 local question_label
 local answer_text_1
@@ -29,9 +30,9 @@ local q_set
 local a_set
 local chosen_set_idx
 
-local current_lv = 10
+local current_lv = 14
 
-function init_level10()
+function init_level14()
 	print("Init Lv: " .. current_lv)
 	
 	function create_question()
@@ -44,16 +45,16 @@ function init_level10()
 		question_block_group.x = phone_width
 		
 		q_set = {
-			[1] = "..he buy an ice cream..",
-			[2] = "Once upon a time, there",
-			[3] = "is a farmer named Alan.",
-			[4] = "..nobody realized that.",
+			[1] = "Good Day",
+			[2] = "Last Friday",
+			[3] = "Cherry Blossom",
+			[4] = "Flower Bookmark",
 		}
 		a_set = {
-			[1] = "4",
-			[2] = "0",
-			[3] = "1",
-			[4] = "3",
+			[1] = "7",
+			[2] = "10",
+			[3] = "14",
+			[4] = "13",
 		}
 		
 		local random_selection = math.random(1,4)
@@ -73,7 +74,7 @@ function init_level10()
 		question_window.y = q_window_middle_point_y
 		
 		-- Create Question Text
-		question_text = display.newText( question_block_group, q_set[random_selection], phone_middle_x, q_window_middle_point_y +15, DEFAULT_FONT, 18 )
+		question_text = display.newText( question_block_group, q_set[random_selection], phone_middle_x, q_window_middle_point_y +15, DEFAULT_FONT, 20 )
 		question_text_2 = display.newText( question_block_group, "Take a look at", phone_middle_x, q_window_middle_point_y - 35, DEFAULT_FONT, 20 )
 		question_label = display.newText( question_block_group, "No. "..current_lv, phone_middle_x, q_window_middle_point_y - 85, DEFAULT_FONT, 24 )
 		
@@ -130,7 +131,8 @@ function init_level10()
 		question_text.isVisible = false
 		question_text_2.isVisible = false
 		
-		question_text_3 = display.newText( question_block_group, "How many '.' was there?", phone_middle_x, q_window_middle_point_y, DEFAULT_FONT, 19 )
+		question_text_3 = display.newText( question_block_group, "How many letters", phone_middle_x, q_window_middle_point_y - 8, DEFAULT_FONT, 19 )
+		question_text_4 = display.newText( question_block_group, "were there?", phone_middle_x, q_window_middle_point_y + 7, DEFAULT_FONT, 19 )
 		
 		
 		-- Show Answer
@@ -150,8 +152,8 @@ function init_level10()
 			--Remove Question 1
 			remove_question()
 			
-			require("level11")
-			init_level11()
+			require("level15")
+			init_level15()
 		else
 			-- Game Over
 			remove_question()
@@ -169,6 +171,7 @@ function init_level10()
 		display.remove(question_text)
 		display.remove(question_text_2)
 		display.remove(question_text_3)
+		display.remove(question_text_4)
 		display.remove(question_window)
 		display.remove(question_label)
 		

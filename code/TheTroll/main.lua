@@ -238,6 +238,12 @@ function create_progress()
 end
 
 function update_progress(num)
+	local num = num % 10
+	
+	if num == 0 then
+		num = 10
+	end
+	
 	progress_group:toFront()
 	
 	transition.to( progress_bar[num], { time=progress_bar_animation_speed, alpha=1.0 } )
